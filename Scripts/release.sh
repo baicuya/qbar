@@ -71,7 +71,7 @@ print -r -- "$version" | /usr/bin/grep -Eq '^[0-9]+(\.[0-9]+){1,2}$' || fail "In
 /usr/bin/grep -q '^Timestamp=' "$stage/signature.txt" || fail "The Developer ID signature has no secure timestamp."
 
 # A direct-download build must not accidentally inherit development or Store entitlements.
-/usr/bin/codesign -d --entitlements :- "$app" > "$stage/entitlements.plist" 2>/dev/null || true
+/usr/bin/codesign -d --entitlements :- "$app" > "$stage/entitlements.plist" 2>/dev/null || fail "Could not inspect the app entitlements."
 if [[ -s "$stage/entitlements.plist" ]]; then
     /usr/bin/plutil -lint "$stage/entitlements.plist" >/dev/null || fail "The signed entitlements are malformed."
     for forbidden_key in com.apple.security.get-task-allow com.apple.security.app-sandbox; do
@@ -119,9 +119,18 @@ checksum_name="$archive_name.sha256"
 (cd "$stage" && /usr/bin/shasum -a 256 "$archive_name" > "$checksum_name")
 
 /bin/mkdir -p dist
+release_lock="dist/.qbar-release.lock"
+/bin/mkdir "$release_lock" || fail "Another release is finishing, or a stale release lock exists."
+cleanup_output() {
+    /bin/rmdir "$release_lock" 2>/dev/null || true
+}
+trap 'cleanup_output; cleanup' EXIT
 [[ ! -e "dist/$archive_name" && ! -e "dist/$checksum_name" ]] || fail "Release files already exist in dist; refusing to overwrite them."
-/bin/mv "$archive" "dist/$archive_name"
-/bin/mv "$stage/$checksum_name" "dist/$checksum_name"
+/bin/mv "$archive" "dist/$archive_name" || fail "Could not move the release archive into dist."
+if ! /bin/mv "$stage/$checksum_name" "dist/$checksum_name"; then
+    /bin/rm -f -- "dist/$archive_name"
+    fail "Could not move the checksum into dist; removed the partial release archive."
+fi
 print -- "Notarized release ready: $task_root/dist/$archive_name"
 print -- "SHA-256: $task_root/dist/$checksum_name"
 print -- "No GitHub release was created or uploaded."
