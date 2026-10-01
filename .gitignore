@@ -1,0 +1,10 @@
+.build/
+build/
+build-store/
+backups/
+.DS_Store
+*.xcuserstate
+xcuserdata/
+dist/
+*.log
+statusItemIcon-0Template.png

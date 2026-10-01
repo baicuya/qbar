@@ -1,0 +1,68 @@
+name: Qbar
+configs:
+  Debug: debug
+  Release: release
+  AppStore: release
+  AppStoreDebug: debug
+options:
+  bundleIdPrefix: studio.qbar
+  developmentLanguage: zh-Hans
+  deploymentTarget:
+    macOS: "14.4"
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    MACOSX_DEPLOYMENT_TARGET: "14.4"
+    CODE_SIGN_STYLE: Manual
+    CODE_SIGN_IDENTITY: "-"
+    ENABLE_HARDENED_RUNTIME: YES
+    COMBINE_HIDPI_IMAGES: YES
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+    DEVELOPMENT_TEAM: ""
+packages:
+  QbarCore:
+    path: .
+targets:
+  Qbar:
+    type: application
+    platform: macOS
+    sources:
+      - App
+      - path: Resources
+        excludes: [Info.plist, AppStore.entitlements]
+    dependencies:
+      - package: QbarCore
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: studio.qbar.mac
+        PRODUCT_NAME: Qbar
+        INFOPLIST_FILE: Resources/Info.plist
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/../Frameworks"
+      configs:
+        AppStoreDebug:
+          ENABLE_APP_SANDBOX: YES
+          CODE_SIGN_ENTITLEMENTS: Resources/AppStore.entitlements
+          SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG APP_STORE"
+        AppStore:
+          ENABLE_APP_SANDBOX: YES
+          CODE_SIGN_ENTITLEMENTS: Resources/AppStore.entitlements
+          SWIFT_ACTIVE_COMPILATION_CONDITIONS: APP_STORE
+schemes:
+  Qbar:
+    build:
+      targets:
+        Qbar: all
+    run:
+      config: Debug
+    archive:
+      config: Release
+  Qbar-AppStore:
+    build:
+      targets:
+        Qbar: all
+    run:
+      config: AppStoreDebug
+    archive:
+      config: AppStore

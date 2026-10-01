@@ -1,0 +1,4 @@
+"CFBundleDisplayName" = "Qbar";
+"CFBundleName" = "Qbar";
+"NSScreenCaptureUsageDescription" = "Qbar captures menu bar icon snapshots for display in Hidden Items. Snapshots may be cached locally on this Mac; Qbar does not record audio or upload data.";
+"NSAccessibilityUsageDescription" = "Qbar needs Accessibility access to identify, arrange, and click menu bar icons.";

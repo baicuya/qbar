@@ -1,0 +1,4 @@
+"CFBundleDisplayName" = "Qbar";
+"CFBundleName" = "Qbar";
+"NSScreenCaptureUsageDescription" = "Qbar 截取菜单栏图标用于收纳区显示。图标快照可能缓存在这台 Mac 本地；不采集音频，也不上传数据。";
+"NSAccessibilityUsageDescription" = "Qbar 需要辅助功能权限来识别、排序及点击菜单栏图标。";
