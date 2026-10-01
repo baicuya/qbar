@@ -27,6 +27,17 @@ xcodebuild -project Qbar.xcodeproj -scheme Qbar -configuration Debug -derivedDat
 
 For a local distributable bundle, set `QBAR_SIGNING_IDENTITY` to an Apple Development signing identity and run `zsh Scripts/build.sh`. Its output is **not notarized**. The default ad-hoc signature is for development only and may not retain the macOS permissions required by Qbar.
 
+For a GitHub Release download, install a valid **Developer ID Application** certificate and store notarization credentials with `xcrun notarytool store-credentials`. Commit the source first, then run from a clean working tree:
+
+```sh
+QBAR_SIGNING_IDENTITY='Developer ID Application: Your Name (TEAMID)' \
+QBAR_TEAM_ID='TEAMID' \
+QBAR_NOTARY_PROFILE='YourNotaryProfile' \
+zsh Scripts/release.sh
+```
+
+The script creates `dist/Qbar-<version>-macos-universal.zip` and a SHA-256 checksum only after notarization, stapling, and Gatekeeper validation succeed. It does not upload to GitHub. Keep certificate private keys and notarization credentials out of the repository.
+
 Qbar needs user-granted Accessibility control to move and reveal status items, and Screen Recording to capture their original menu bar images. Status icon snapshots and preferences stay in `~/Library/Application Support/Qbar/`; the app does not upload them. Resetting settings or revoking Screen Recording clears the icon cache.
 
 ## License

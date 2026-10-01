@@ -26,6 +26,17 @@ zsh Scripts/build.sh
 
 输出 `dist/Qbar.app` 和 `dist/Qbar.zip`。脚本默认临时签名，仅供开发；需要系统辅助功能和录屏授权时，请使用自己的 Apple Development 证书设置 `QBAR_SIGNING_IDENTITY`。这不是已公证或已提交商店的发行包。不要把临时签名的压缩包当成面向普通用户的正式版本。
 
+发布 GitHub Releases 安装包须先在钥匙串安装有效的 **Developer ID Application** 证书，并用 `xcrun notarytool store-credentials` 保存公证凭据。确认源码已提交、工作区干净，再运行：
+
+```sh
+QBAR_SIGNING_IDENTITY='Developer ID Application: Your Name (TEAMID)' \
+QBAR_TEAM_ID='TEAMID' \
+QBAR_NOTARY_PROFILE='YourNotaryProfile' \
+zsh Scripts/release.sh
+```
+
+此脚本在 Apple 公证通过、票据附加及 Gatekeeper 验证成功后，才生成 `dist/Qbar-<版本>-macos-universal.zip` 和 SHA-256 校验文件；它不会自动上传 GitHub。证书、Team ID 与公证凭据必须属于同一开发团队。不要把证书私钥或公证密码提交到仓库。
+
 ## 功能
 
 - 普通折叠、水平玻璃收纳栏，始终显示 / 收纳 / 始终隐藏三组。
