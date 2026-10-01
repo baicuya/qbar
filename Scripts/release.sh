@@ -62,7 +62,7 @@ bundle_id=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$info_plist"
 version=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$info_plist")
 print -r -- "$version" | /usr/bin/grep -Eq '^[0-9]+(\.[0-9]+){1,2}$' || fail "Invalid release version: $version"
 
-/usr/bin/lipo -verify_arch arm64 x86_64 "$app/Contents/MacOS/Qbar" >/dev/null || fail "The app is not a universal arm64/x86_64 build."
+/usr/bin/lipo "$app/Contents/MacOS/Qbar" -verify_arch arm64 x86_64 >/dev/null || fail "The app is not a universal arm64/x86_64 build."
 /usr/bin/codesign --verify --strict --deep --verbose=2 "$app" || fail "Code signature validation failed."
 /usr/bin/codesign -dv --verbose=4 "$app" > "$stage/signature.txt" 2>&1 || fail "Could not inspect the code signature."
 /usr/bin/grep -Fxq -- "Authority=$QBAR_SIGNING_IDENTITY" "$stage/signature.txt" || fail "The app is not signed by the requested Developer ID Application identity."

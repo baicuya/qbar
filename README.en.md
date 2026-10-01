@@ -4,7 +4,7 @@
 
 Qbar is a native macOS menu bar organizer built with SwiftUI, AppKit, and ScreenCaptureKit. It has no account, analytics SDK, or network service.
 
-**Status: open-source development preview. There is no public binary release yet.** The current full-feature build is a local, non-sandboxed app. The experimental Mac App Store build is not feature-equivalent; see [App Store feasibility](docs/APP_STORE.md).
+**Status: open-source preview.** [Qbar 1.0.0 Preview 1](https://github.com/baicuya/qbar/releases/tag/v1.0.0-preview.1) includes a Developer ID signed and Apple notarized download. The full-feature build is a non-sandboxed app. The experimental Mac App Store build is not feature-equivalent; see [App Store feasibility](docs/APP_STORE.md).
 
 ## Features
 
@@ -37,6 +37,14 @@ zsh Scripts/release.sh
 ```
 
 The script creates `dist/Qbar-<version>-macos-universal.zip` and a SHA-256 checksum only after notarization, stapling, and Gatekeeper validation succeed. It does not upload to GitHub. Keep certificate private keys and notarization credentials out of the repository.
+
+If you have already exported a **Developer ID signed and Apple notarized** `Qbar.app` from Xcode Organizer, you can validate and package that export without submitting it for notarization again:
+
+```sh
+QBAR_TEAM_ID=CFZ7CJRP9T zsh Scripts/package-notarized.sh '/path/to/Qbar.app'
+```
+
+This script checks the exported app's version, Developer ID signature and team, hardened runtime, timestamp, notarization ticket, and Gatekeeper acceptance. If needed, it staples the ticket to a temporary copy only. It then produces the same ZIP and SHA-256 files without changing the exported app or uploading to GitHub. Existing output files are never overwritten. `QBAR_TEAM_ID` defaults to `CFZ7CJRP9T`; set it explicitly for another team.
 
 Qbar needs user-granted Accessibility control to move and reveal status items, and Screen Recording to capture their original menu bar images. Status icon snapshots and preferences stay in `~/Library/Application Support/Qbar/`; the app does not upload them. Resetting settings or revoking Screen Recording clears the icon cache.
 

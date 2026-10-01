@@ -4,7 +4,7 @@
 
 原生 macOS 菜单栏管理工具。Swift、SwiftUI、AppKit、ScreenCaptureKit；无第三方运行时依赖，无账号和后台联网。
 
-**当前状态：开源开发预览，尚无公开发行版。** 2026-09-30 重做收纳栏、原始图标快照、原生菜单激活及布局恢复。最新实测见 `docs/REDESIGN-2026-09-30.md`，历史记录见 `docs/QUALITY.md`。
+**当前状态：开源预览版。** [Qbar 1.0.0 Preview 1](https://github.com/baicuya/qbar/releases/tag/v1.0.0-preview.1) 提供 Developer ID 签名并经 Apple 公证的下载包。2026-09-30 重做收纳栏、原始图标快照、原生菜单激活及布局恢复。最新实测见 `docs/REDESIGN-2026-09-30.md`，历史记录见 `docs/QUALITY.md`。
 
 源码按 [MIT License](LICENSE) 开放。Qbar 只使用本机菜单栏信息；个人布局和图标快照保存在本机，不应提交到代码仓库。项目内的 `backups/`、构建目录和调试日志都在 `.gitignore` 中。问题反馈可使用 GitHub Issues。
 
@@ -36,6 +36,14 @@ zsh Scripts/release.sh
 ```
 
 此脚本在 Apple 公证通过、票据附加及 Gatekeeper 验证成功后，才生成 `dist/Qbar-<版本>-macos-universal.zip` 和 SHA-256 校验文件；它不会自动上传 GitHub。证书、Team ID 与公证凭据必须属于同一开发团队。不要把证书私钥或公证密码提交到仓库。
+
+如果已通过 Xcode Organizer 导出 **Developer ID 签名并经 Apple 公证** 的 `Qbar.app`，也可只做本地验收与打包，无需在脚本中再次提交公证：
+
+```sh
+QBAR_TEAM_ID=CFZ7CJRP9T zsh Scripts/package-notarized.sh '/path/to/Qbar.app'
+```
+
+脚本核对导出包与源码的版本、Developer ID 签名和团队、强化运行时、时间戳、公证票据及 Gatekeeper；如果票据尚未附加，只会给临时副本附加。通过后生成同名 ZIP 和 SHA-256 文件，不改动导出的原包，也不上传 GitHub。已有同名输出不会被覆盖。`QBAR_TEAM_ID` 默认为 `CFZ7CJRP9T`，使用其他开发团队时可显式指定。
 
 ## 功能
 
